@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 
+/* Root Styles */
 :root {
   font-family: 'Inter Tight', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -13,6 +14,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Link Styling */
 a {
   font-weight: 500;
   color: #646cff;
@@ -22,6 +24,7 @@ a:hover {
   color: #535bf2;
 }
 
+/* Body Background */
 body {
   background: linear-gradient(
     180deg,
@@ -30,38 +33,40 @@ body {
     rgba(0, 2, 18, 1) 100%
   );
   background-size: cover;
-  background-repeat: no-repeat no-repeat;
-  background-position: center center;
+  background-repeat: no-repeat;
+  background-position: center;
   margin: 0;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  color: #fff;
 }
 
+/* Heading Styling */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
-button {
+/* Button Styling */
+button, .button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
   background-color: #1a1a1a;
+  color: white;
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+button:hover, .button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+button:focus, .button:focus, button:focus-visible, .button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Light Mode Adjustments */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -70,11 +75,12 @@ button:focus-visible {
   a:hover {
     color: #747bff;
   }
-  button {
+  button, .button {
     background-color: #f9f9f9;
   }
 }
 
+/* Main Styling */
 main {
   color: #fff;
   width: 100%;
@@ -84,37 +90,30 @@ main {
   align-items: center;
 }
 
+/* Table Styling */
 tr {
   border-radius: 10px;
   background-color: #000;
   color: white;
 }
-
 tbody tr:nth-child(odd) {
   background-color: #333333;
 }
-
-.nav {
-  display: flex;
-  justify-content: flex-start;
-  padding: 1em 2em;
-}
-
-.nav-item {
-  padding: 0 0.5rem;
-  list-style: none;
-}
-
-.nav-link {
-  color: #fff;
-  text-decoration: none;
-}
-
-.active {
-  font-weight: 700;
-}
-
 .table {
   width: 80vw;
   table-layout: fixed;
+}
+
+/* Navbar Custom Styles */
+.navbar {
+  background-color: rgba(32, 44, 136, 0.9);
+}
+.navbar-item {
+  color: #fff;
+}
+.navbar-item:hover {
+  background-color: rgba(32, 44, 136, 0.8);
+}
+.active {
+  font-weight: 700;
 }
