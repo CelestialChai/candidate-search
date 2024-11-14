@@ -1,22 +1,16 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Nav = () => {
+const Nav: React.FC = () => {
   return (
-    <nav className="navbar is-primary" role="navigation" aria-label="main navigation">
+    <nav className="navbar" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
         <Link to="/" className="navbar-item">
-          Candidate Finder
+          Home
         </Link>
-      </div>
-      <div className="navbar-menu">
-        <div className="navbar-start">
-          <Link to="/" className="navbar-item">
-            Search Candidates
-          </Link>
-          <Link to="/saved-candidates" className="navbar-item">
-            Saved Candidates
-          </Link>
-        </div>
+        <Link to="/saved-candidates" className="navbar-item">
+          Saved Candidates
+        </Link>
       </div>
     </nav>
   );

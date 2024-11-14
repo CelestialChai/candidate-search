@@ -1,77 +1,101 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { searchGithub } from '../api/API';
+import { Candidate } from '../interfaces/Candidate.interface';
+import { Card, Media, Image, Content, Button, Heading } from 'react-bulma-components';
 
-interface Candidate {
-  id: number;
-  login: string;
-  avatar_url: string;
-  html_url: string;
-  location?: string;
-  email?: string;
-  company?: string;
-}
+type SavedCandidate = Candidate & { status: 'Approved' | 'Rejected' };
 
-const CandidateSearch = () => {
-  const [currentCandidate, setCurrentCandidate] = useState<Candidate | null>(null);
-  const [potentialCandidates, setPotentialCandidates] = useState<Candidate[]>(() => {
+const CandidateSearch: React.FC = () => {
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+  const [savedCandidates, setSavedCandidates] = useState<SavedCandidate[]>(() => {
     return JSON.parse(localStorage.getItem("potentialCandidates") || "[]");
   });
 
-  // Fetch the next candidate when the component mounts or a candidate is skipped/saved
+  // Load candidates from the GitHub API
   useEffect(() => {
-    fetchNextCandidate();
+    const fetchCandidates = async () => {
+      const fetchedCandidates = await searchGithub();
+      setCandidates(fetchedCandidates);
+    };
+    fetchCandidates();
   }, []);
 
-  // Save potential candidates to localStorage whenever the list updates
+  // Save to local storage whenever savedCandidates changes
   useEffect(() => {
-    localStorage.setItem("potentialCandidates", JSON.stringify(potentialCandidates));
-  }, [potentialCandidates]);
+    localStorage.setItem("potentialCandidates", JSON.stringify(savedCandidates));
+  }, [savedCandidates]);
 
-  const fetchNextCandidate = async () => {
-    const candidates = await searchGithub();
-    if (candidates.length > 0) {
-      setCurrentCandidate(candidates[0]); // Display the first candidate from the fetched list
-    } else {
-      setCurrentCandidate(null); // Show a message if no more candidates are available
-    }
-  };
-
+  // Function to save a candidate with status "Approved"
   const saveCandidate = () => {
-    if (currentCandidate) {
-      setPotentialCandidates([...potentialCandidates, currentCandidate]);
-      fetchNextCandidate();
+    if (candidates[currentCandidateIndex]) {
+      const approvedCandidate: SavedCandidate = { ...candidates[currentCandidateIndex], status: 'Approved' };
+
+      // Check for duplicates before saving
+      if (!savedCandidates.some(candidate => candidate.id === approvedCandidate.id)) {
+        setSavedCandidates([...savedCandidates, approvedCandidate]);
+      }
+
+      goToNextCandidate();
     }
   };
 
+  // Function to save a candidate with status "Rejected"
   const skipCandidate = () => {
-    fetchNextCandidate();
+    if (candidates[currentCandidateIndex]) {
+      const rejectedCandidate: SavedCandidate = { ...candidates[currentCandidateIndex], status: 'Rejected' };
+
+      // Check for duplicates before saving
+      if (!savedCandidates.some(candidate => candidate.id === rejectedCandidate.id)) {
+        setSavedCandidates([...savedCandidates, rejectedCandidate]);
+      }
+
+      goToNextCandidate();
+    }
   };
+
+  // Move to the next candidate or display a message if none are left
+  const goToNextCandidate = () => {
+    if (currentCandidateIndex < candidates.length - 1) {
+      setCurrentCandidateIndex(currentCandidateIndex + 1);
+    } else {
+      setCandidates([]);
+    }
+  };
+
+  const currentCandidate = candidates[currentCandidateIndex];
 
   return (
     <div className="container">
-      <h1 className="title">Candidate Search</h1>
       {currentCandidate ? (
-        <div className="card">
-          <div className="card-image">
-            <figure className="image is-128x128">
-              <img src={currentCandidate.avatar_url} alt={currentCandidate.login} />
-            </figure>
-          </div>
-          <div className="card-content">
-            <p className="title is-4">{currentCandidate.login}</p>
-            <p><strong>Location:</strong> {currentCandidate.location || "N/A"}</p>
-            <p><strong>Company:</strong> {currentCandidate.company || "N/A"}</p>
-            <a href={currentCandidate.html_url} className="button is-link" target="_blank" rel="noopener noreferrer">
-              GitHub Profile
-            </a>
-          </div>
+        <Card className="mb-4">
+          <Card.Image size="4by3" src={currentCandidate.avatar_url} alt={currentCandidate.login} />
+          <Card.Content>
+            <Media>
+              <Media.Item align="left">
+                <Image size={48} src={currentCandidate.avatar_url} alt="Profile image" />
+              </Media.Item>
+              <Media.Item>
+                <Heading size={4}>{currentCandidate.name || currentCandidate.login}</Heading>
+                <Heading subtitle size={6}>@{currentCandidate.login}</Heading>
+              </Media.Item>
+            </Media>
+            <Content>
+              <p><strong>Company:</strong> {currentCandidate.company || 'N/A'}</p>
+              <p><strong>Email:</strong> {currentCandidate.email || 'N/A'}</p>
+              <p>{currentCandidate.bio || 'No bio available.'}</p>
+              <a href={currentCandidate.html_url} target="_blank" rel="noopener noreferrer">
+                View GitHub Profile
+              </a>
+            </Content>
+          </Card.Content>
           <div className="buttons">
-            <button className="button is-success" onClick={saveCandidate}>Save Candidate</button>
-            <button className="button is-danger" onClick={skipCandidate}>Skip Candidate</button>
+            <Button color="success" onClick={saveCandidate}>+</Button>
+            <Button color="danger" onClick={skipCandidate}>-</Button>
           </div>
-        </div>
+        </Card>
       ) : (
-        <p className="notification is-danger">No more candidates available</p>
+        <p className="notification is-warning">No more candidates available</p>
       )}
     </div>
   );
