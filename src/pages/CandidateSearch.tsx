@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { searchGithub } from '../api/API';
 import { Candidate } from '../interfaces/Candidate.interface';
-import { Card, Media, Image, Content, Button, Heading } from 'react-bulma-components';
+import { Card, Media, Image, Content, Heading } from 'react-bulma-components';
 import approveIcon from '../assets/plus.png';
 import rejectIcon from '../assets/remove.png';
 
