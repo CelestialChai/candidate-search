@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { searchGithub } from '../api/API';
 import { Candidate } from '../interfaces/Candidate.interface';
 import { Card, Media, Image, Content, Button, Heading } from 'react-bulma-components';
+import approveIcon from '../assets/plus.png';
+import rejectIcon from '../assets/remove.png';
 
 type SavedCandidate = Candidate & { status: 'Approved' | 'Rejected' };
 
@@ -12,7 +14,6 @@ const CandidateSearch: React.FC = () => {
     return JSON.parse(localStorage.getItem("potentialCandidates") || "[]");
   });
 
-  // Load candidates from the GitHub API
   useEffect(() => {
     const fetchCandidates = async () => {
       const fetchedCandidates = await searchGithub();
@@ -21,7 +22,6 @@ const CandidateSearch: React.FC = () => {
     fetchCandidates();
   }, []);
 
-  // Save to local storage whenever savedCandidates changes
   useEffect(() => {
     localStorage.setItem("potentialCandidates", JSON.stringify(savedCandidates));
   }, [savedCandidates]);
@@ -29,32 +29,26 @@ const CandidateSearch: React.FC = () => {
   // Function to save a candidate with status "Approved"
   const saveCandidate = () => {
     if (candidates[currentCandidateIndex]) {
-      const approvedCandidate: SavedCandidate = { ...candidates[currentCandidateIndex], status: 'Approved' };
-
-      // Check for duplicates before saving
-      if (!savedCandidates.some(candidate => candidate.id === approvedCandidate.id)) {
-        setSavedCandidates([...savedCandidates, approvedCandidate]);
-      }
-
+      const approvedCandidate: SavedCandidate = {
+        ...candidates[currentCandidateIndex],
+        status: 'Approved'
+      };
+      setSavedCandidates([...savedCandidates, approvedCandidate]);
       goToNextCandidate();
     }
   };
 
-  // Function to save a candidate with status "Rejected"
   const skipCandidate = () => {
     if (candidates[currentCandidateIndex]) {
-      const rejectedCandidate: SavedCandidate = { ...candidates[currentCandidateIndex], status: 'Rejected' };
-
-      // Check for duplicates before saving
-      if (!savedCandidates.some(candidate => candidate.id === rejectedCandidate.id)) {
-        setSavedCandidates([...savedCandidates, rejectedCandidate]);
-      }
-
+      const rejectedCandidate: SavedCandidate = {
+        ...candidates[currentCandidateIndex],
+        status: 'Rejected'
+      };
+      setSavedCandidates([...savedCandidates, rejectedCandidate]);
       goToNextCandidate();
     }
   };
 
-  // Move to the next candidate or display a message if none are left
   const goToNextCandidate = () => {
     if (currentCandidateIndex < candidates.length - 1) {
       setCurrentCandidateIndex(currentCandidateIndex + 1);
@@ -90,8 +84,12 @@ const CandidateSearch: React.FC = () => {
             </Content>
           </Card.Content>
           <div className="buttons">
-            <Button color="success" onClick={saveCandidate}>+</Button>
-            <Button color="danger" onClick={skipCandidate}>-</Button>
+            <button onClick={saveCandidate} className="button is-light">
+              <img src={approveIcon} alt="Approve" style={{ width: '24px', height: '24px' }} />
+            </button>
+            <button onClick={skipCandidate} className="button is-light">
+              <img src={rejectIcon} alt="Reject" style={{ width: '24px', height: '24px' }} />
+            </button>
           </div>
         </Card>
       ) : (

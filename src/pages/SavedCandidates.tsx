@@ -1,96 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import { searchGithub } from '../api/API';
-import { Candidate } from '../interfaces/Candidate.interface';
-import { Card, Media, Image, Content, Button, Heading } from 'react-bulma-components';
+import React, { useEffect, useState } from 'react';
+import { SavedCandidate } from '../interfaces/Candidate.interface';
 
-type SavedCandidate = Candidate & { status: 'Approved' | 'Rejected' };
-
-const CandidateSearch: React.FC = () => {
-  const [candidates, setCandidates] = useState<Candidate[]>([]);
-  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
-  const [savedCandidates, setSavedCandidates] = useState<SavedCandidate[]>(() => {
-    return JSON.parse(localStorage.getItem("potentialCandidates") || "[]");
-  });
+const SavedCandidates: React.FC = () => {
+  const [savedCandidates, setSavedCandidates] = useState<SavedCandidate[]>([]);
 
   useEffect(() => {
-    const fetchCandidates = async () => {
-      const fetchedCandidates = await searchGithub();
-      setCandidates(fetchedCandidates);
-    };
-    fetchCandidates();
+    const candidates = JSON.parse(localStorage.getItem('potentialCandidates') || '[]');
+    setSavedCandidates(candidates);
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("potentialCandidates", JSON.stringify(savedCandidates));
-  }, [savedCandidates]);
-
-  const saveCandidate = () => {
-    if (candidates[currentCandidateIndex]) {
-      const approvedCandidate: SavedCandidate = {
-        ...candidates[currentCandidateIndex],
-        status: 'Approved',
-        };
-      setSavedCandidates([...savedCandidates, approvedCandidate]);
-      goToNextCandidate();
-    }
-  };
-
-  const skipCandidate = () => {
-    if (candidates[currentCandidateIndex]) {
-      const rejectedCandidate: SavedCandidate = {
-        ...candidates[currentCandidateIndex],
-        status: 'Rejected',
-      };
-      setSavedCandidates([...savedCandidates, rejectedCandidate]);
-      goToNextCandidate();
-    }
-  };
-
-
-  const goToNextCandidate = () => {
-    if (currentCandidateIndex < candidates.length - 1) {
-      setCurrentCandidateIndex(currentCandidateIndex + 1);
-    } else {
-      setCandidates([]);
-    }
-  };
-
-  const currentCandidate = candidates[currentCandidateIndex];
 
   return (
     <div className="container">
-      {currentCandidate ? (
-        <Card className="mb-4">
-          <Card.Image size="4by3" src={currentCandidate.avatar_url} alt={currentCandidate.login} />
-          <Card.Content>
-            <Media>
-              <Media.Item align="left">
-                <Image size={48} src={currentCandidate.avatar_url} alt="Profile image" />
-              </Media.Item>
-              <Media.Item>
-                <Heading size={4}>{currentCandidate.name || currentCandidate.login}</Heading>
-                <Heading subtitle size={6}>@{currentCandidate.login}</Heading>
-              </Media.Item>
-            </Media>
-            <Content>
-              <p><strong>Company:</strong> {currentCandidate.company || 'N/A'}</p>
-              <p><strong>Email:</strong> {currentCandidate.email || 'N/A'}</p>
-              <p>{currentCandidate.bio || 'No bio available.'}</p>
-              <a href={currentCandidate.html_url} target="_blank" rel="noopener noreferrer">
-                View GitHub Profile
-              </a>
-            </Content>
-          </Card.Content>
-          <div className="buttons">
-            <Button color="success" onClick={saveCandidate}>+</Button>
-            <Button color="danger" onClick={skipCandidate}>-</Button>
-          </div>
-        </Card>
+      <h1 className="title">Saved Candidates</h1>
+      {savedCandidates.length === 0 ? (
+        <p className="notification is-warning">No candidates have been saved yet.</p>
       ) : (
-        <p className="notification is-warning">No more candidates available</p>
+        <table className="table is-fullwidth is-striped is-hoverable">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Location</th>
+              <th>Email</th>
+              <th>Company</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {savedCandidates.map((candidate) => (
+              <tr key={candidate.id}>
+                <td>
+                  <figure className="image is-48x48">
+                    <img src={candidate.avatar_url} alt={candidate.name || candidate.login} />
+                  </figure>
+                </td>
+                <td>{candidate.name || 'N/A'}</td>
+                <td>{candidate.login}</td>
+                <td>{candidate.location || 'N/A'}</td>
+                <td>{candidate.email || 'N/A'}</td>
+                <td>{candidate.company || 'N/A'}</td>
+                <td>
+                  <span
+                    className={`tag is-${candidate.status === 'Approved' ? 'success' : 'danger'}`}
+                  >
+                    {candidate.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
 };
 
-export default CandidateSearch;
+export default SavedCandidates;
