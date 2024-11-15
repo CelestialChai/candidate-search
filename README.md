@@ -28,4 +28,4 @@ Amanda G.
 npm test
 
 ## Questions
-If you have any questions, you can find me on [GitHub](https://github.com/celestialchai)
+If you have any questions, you can find me on [GitHub](https://github.com/celestialchai). If the deployed website on [Render](https://candidate-search-1-94fm.onrender.com/) doesn't show any results please use [Netlify](https://git-candidatesearch.netlify.app/).
