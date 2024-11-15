@@ -1,11 +1,11 @@
 const searchGithub = async () => {
   try {
-    const start = Math.floor(Math.random() * 100000000) + 1;
-    const token = import.meta.env.VITE_GITHUB_TOKEN; // Correct way to access environment variables in Vite
+    const start = Math.floor(Math.random() * 50000) + 1;
+    const token = import.meta.env.VITE_GITHUB_TOKEN;
 
     const response = await fetch(`https://api.github.com/users?since=${start}`, {
       headers: {
-        Authorization: `Token ${token}`, // Use "Token" prefix for GitHub API
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -23,11 +23,11 @@ const searchGithub = async () => {
 
 const searchGithubUser = async (username: string) => {
   try {
-    const token = import.meta.env.VITE_GITHUB_TOKEN; // Correct way to access environment variables in Vite
+    const token = import.meta.env.VITE_GITHUB_TOKEN;
 
     const response = await fetch(`https://api.github.com/users/${username}`, {
       headers: {
-        Authorization: `Token ${token}`, // Use "Token" prefix for GitHub API
+        Authorization: `Bearer ${token}`,
       },
     });
 

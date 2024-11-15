@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'bulma/css/bulma.min.css';
 
-/* Root Styles */
 :root {
   font-family: 'Inter Tight', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,8 +13,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/* Link Styling */
 a {
   font-weight: 500;
   color: #646cff;
@@ -25,7 +22,6 @@ a:hover {
   color: #535bf2;
 }
 
-/* Body Background */
 body {
   background: linear-gradient(
     180deg,
@@ -42,13 +38,12 @@ body {
   color: #fff;
 }
 
-/* Heading Styling */
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
-/* Button Styling */
 button, .button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -67,7 +62,6 @@ button:focus, .button:focus, button:focus-visible, .button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Light Mode Adjustments */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -81,7 +75,6 @@ button:focus, .button:focus, button:focus-visible, .button:focus-visible {
   }
 }
 
-/* Main Styling */
 main {
   color: #fff;
   width: 100%;
@@ -91,7 +84,6 @@ main {
   align-items: center;
 }
 
-/* Table Styling */
 tr {
   border-radius: 10px;
   background-color: #000;
@@ -105,7 +97,6 @@ tbody tr:nth-child(odd) {
   table-layout: fixed;
 }
 
-/* Navbar Custom Styles */
 .navbar {
   background-color: rgba(32, 44, 136, 0.9);
 }
